@@ -99,7 +99,35 @@ public class PersonalData extends BioData {
         
         sb.append("\nNAME OF CHILDREN (Write full name and list all)\n");
         sb.append("-".repeat(80)).append("\n");
-        addChildLine(sb, allFields.get("childname"), allFields.get("childdob"));
+        
+        // Display all children
+        boolean hasChild = false;
+        int childNum = 1;
+        
+        // Check for first child (without suffix)
+        if (!safe(allFields.get("childname")).isEmpty()) {
+            addChildLine(sb, allFields.get("childname"), allFields.get("childdob"));
+            hasChild = true;
+            childNum++;
+        }
+        
+        // Check for additional children (with suffixes _2, _3, etc.)
+        while (true) {
+            String childSuffix = "_" + childNum;
+            String name = allFields.get("childname" + childSuffix);
+            
+            if (name == null || safe(name).isEmpty()) {
+                break; // No more children
+            }
+            
+            addChildLine(sb, name, allFields.get("childdob" + childSuffix));
+            hasChild = true;
+            childNum++;
+        }
+        
+        if (!hasChild) {
+            sb.append("(No children listed)\n");
+        }
         
         sb.append("\nFATHER'S INFORMATION\n");
         addFormLine(sb, "SURNAME", allFields.get("fathersurname"), "", "");
@@ -123,16 +151,85 @@ public class PersonalData extends BioData {
         
         sb.append("\nIV. CIVIL SERVICE ELIGIBILITY\n");
         sb.append("=".repeat(80)).append("\n");
-        addCivilServiceLine(sb, allFields.get("cseligibility"), allFields.get("csrating"),
-                           allFields.get("csexamdate"), allFields.get("csexamplace"),
-                           allFields.get("cslicensenumber"), allFields.get("cslicensevalidity"));
+        
+        // Display all civil service eligibilities
+        boolean hasCS = false;
+        int csNum = 1;
+        
+        // Check for first eligibility (without suffix)
+        if (!safe(allFields.get("cseligibility")).isEmpty()) {
+            addCivilServiceLine(sb, allFields.get("cseligibility"), allFields.get("csrating"),
+                               allFields.get("csexamdate"), allFields.get("csexamplace"),
+                               allFields.get("cslicensenumber"), allFields.get("cslicensevalidity"));
+            hasCS = true;
+            csNum++;
+        }
+        
+        // Check for additional eligibilities (with suffixes _2, _3, etc.)
+        while (true) {
+            String csSuffix = "_" + csNum;
+            String eligibility = allFields.get("cseligibility" + csSuffix);
+            
+            if (eligibility == null || safe(eligibility).isEmpty()) {
+                break; // No more eligibilities
+            }
+            
+            addCivilServiceLine(sb, eligibility,
+                               allFields.get("csrating" + csSuffix),
+                               allFields.get("csexamdate" + csSuffix),
+                               allFields.get("csexamplace" + csSuffix),
+                               allFields.get("cslicensenumber" + csSuffix),
+                               allFields.get("cslicensevalidity" + csSuffix));
+            hasCS = true;
+            csNum++;
+        }
+        
+        if (!hasCS) {
+            sb.append("(No civil service eligibility listed)\n");
+        }
         
         sb.append("\nV. WORK EXPERIENCE\n");
         sb.append("=".repeat(80)).append("\n");
-        addWorkExperienceLine(sb, allFields.get("workfromdate"), allFields.get("worktodate"),
-                             allFields.get("workposition"), allFields.get("workcompany"),
-                             allFields.get("worksalary"), allFields.get("workgrade"),
-                             allFields.get("workstatus"), allFields.get("workgovt"));
+        
+        // Display all work experiences
+        boolean hasWork = false;
+        int workNum = 1;
+        
+        // Check for first work experience (without suffix)
+        if (!safe(allFields.get("workposition")).isEmpty()) {
+            addWorkExperienceLine(sb, allFields.get("workfromdate"), allFields.get("worktodate"),
+                                 allFields.get("workposition"), allFields.get("workcompany"),
+                                 allFields.get("worksalary"), allFields.get("workgrade"),
+                                 allFields.get("workstatus"), allFields.get("workgovt"));
+            hasWork = true;
+            workNum++;
+        }
+        
+        // Check for additional work experiences (with suffixes _2, _3, etc.)
+        while (true) {
+            String workSuffix = "_" + workNum;
+            String position = allFields.get("workposition" + workSuffix);
+            
+            if (position == null || safe(position).isEmpty()) {
+                break; // No more work experiences
+            }
+            
+            addWorkExperienceLine(sb,
+                                 allFields.get("workfromdate" + workSuffix),
+                                 allFields.get("worktodate" + workSuffix),
+                                 position,
+                                 allFields.get("workcompany" + workSuffix),
+                                 allFields.get("worksalary" + workSuffix),
+                                 allFields.get("workgrade" + workSuffix),
+                                 allFields.get("workstatus" + workSuffix),
+                                 allFields.get("workgovt" + workSuffix));
+            hasWork = true;
+            workNum++;
+        }
+        
+        if (!hasWork) {
+            sb.append("(No work experience listed)\n");
+        }
         
         sb.append("\n(Continue on separate sheet if necessary)\n\n");
         
