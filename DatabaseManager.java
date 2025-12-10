@@ -21,6 +21,12 @@ public class DatabaseManager {
         savedBioData.add(bioData);
     }
     
+    public void updateBioData(int index, BioData bioData) {
+        if (index >= 0 && index < savedBioData.size()) {
+            savedBioData.set(index, bioData);
+        }
+    }
+    
     public List<BioData> getAllBioData() {
         return new ArrayList<>(savedBioData);
     }
