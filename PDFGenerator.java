@@ -67,12 +67,19 @@ public class PDFGenerator {
                     header.setSpacingAfter(5);
                     document.add(header);
                 } else if (isDecorativeLine(line)) {
-                    // Add a simple horizontal line for major separators
-                    if (line.startsWith("=") && line.length() > 50) {
+                    // Check if the decorative line contains important content
+                    if (line.contains("SIGNATURE") || line.contains("DATE") || 
+                        line.contains("CS FORM") || line.contains("Continue")) {
+                        // Keep lines with important text
+                        Paragraph p = new Paragraph(line, normalFont);
+                        document.add(p);
+                    } else if (line.startsWith("=") && line.length() > 50) {
+                        // Add a simple horizontal line for major separators
                         Paragraph separator = new Paragraph("_______________________________________________________");
                         separator.setAlignment(Element.ALIGN_CENTER);
                         document.add(separator);
                     }
+                    // Skip purely decorative lines (box borders without content)
                 } else if (!line.contains("[PHOTO") && !line.contains("📸") && !line.trim().isEmpty()) {
                     // Regular content
                     Paragraph p = new Paragraph(line, normalFont);
@@ -99,7 +106,8 @@ public class PDFGenerator {
             "EDUCATION & EXPERIENCE", "EDUCATIONAL ATTAINMENT", "EMPLOYMENT RECORDS",
             "PERSONAL INFORMATION", "ADDRESS INFORMATION", "FAMILY INFORMATION",
             "DEPENDENTS", "NAME OF CHILDREN", "FATHER'S INFORMATION", 
-            "MOTHER'S MAIDEN NAME"
+            "MOTHER'S MAIDEN NAME", "CIVIL SERVICE ELIGIBILITY", "CIVIL SERVICE",
+            "WORK EXPERIENCE", "III.", "IV.", "V."
         };
         
         for (String header : headers) {
