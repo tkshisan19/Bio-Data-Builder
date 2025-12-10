@@ -64,9 +64,42 @@ public class BioDataStandard extends BioData {
         
         sb.append("\nDEPENDENTS\n");
         sb.append("-".repeat(80)).append("\n");
-        addDependentLine(sb, allFields.get("depname"), allFields.get("deprelation"), 
-                        allFields.get("depmonth"), allFields.get("depday"), 
-                        allFields.get("depyear"), allFields.get("depage"));
+        
+        // Display all dependents
+        boolean hasDependent = false;
+        int depNum = 1;
+        
+        // Check for first dependent (without suffix)
+        if (!safe(allFields.get("depname")).isEmpty()) {
+            addDependentLine(sb, allFields.get("depname"), allFields.get("deprelation"), 
+                            allFields.get("depmonth"), allFields.get("depday"), 
+                            allFields.get("depyear"), allFields.get("depage"));
+            hasDependent = true;
+            depNum++;
+        }
+        
+        // Check for additional dependents (with suffixes _2, _3, etc.)
+        while (true) {
+            String nameSuffix = "_" + depNum;
+            String name = allFields.get("depname" + nameSuffix);
+            
+            if (name == null || safe(name).isEmpty()) {
+                break; // No more dependents
+            }
+            
+            addDependentLine(sb, name, 
+                            allFields.get("deprelation" + nameSuffix),
+                            allFields.get("depmonth" + nameSuffix), 
+                            allFields.get("depday" + nameSuffix),
+                            allFields.get("depyear" + nameSuffix), 
+                            allFields.get("depage" + nameSuffix));
+            hasDependent = true;
+            depNum++;
+        }
+        
+        if (!hasDependent) {
+            sb.append("(No dependents listed)\n");
+        }
         
         sb.append("\nEDUCATIONAL ATTAINMENT\n");
         sb.append("=".repeat(80)).append("\n");
@@ -90,15 +123,82 @@ public class BioDataStandard extends BioData {
         
         sb.append("\nEMPLOYMENT RECORDS\n");
         sb.append("=".repeat(80)).append("\n");
-        addEmploymentLine(sb, allFields.get("empcompany"), allFields.get("empposition"), 
-                         allFields.get("empfrommonth"), allFields.get("empfromday"), allFields.get("empfromyear"),
-                         allFields.get("emptomonth"), allFields.get("emptoday"), allFields.get("emptoyear"),
-                         allFields.get("empreason"));
+        
+        // Display all employment records
+        boolean hasEmployment = false;
+        int empNum = 1;
+        
+        // Check for first employment (without suffix)
+        if (!safe(allFields.get("empcompany")).isEmpty()) {
+            addEmploymentLine(sb, allFields.get("empcompany"), allFields.get("empposition"), 
+                             allFields.get("empfrommonth"), allFields.get("empfromday"), allFields.get("empfromyear"),
+                             allFields.get("emptomonth"), allFields.get("emptoday"), allFields.get("emptoyear"),
+                             allFields.get("empreason"));
+            hasEmployment = true;
+            empNum++;
+        }
+        
+        // Check for additional employment records (with suffixes _2, _3, etc.)
+        while (true) {
+            String empSuffix = "_" + empNum;
+            String company = allFields.get("empcompany" + empSuffix);
+            
+            if (company == null || safe(company).isEmpty()) {
+                break; // No more employment records
+            }
+            
+            addEmploymentLine(sb, company,
+                             allFields.get("empposition" + empSuffix),
+                             allFields.get("empfrommonth" + empSuffix),
+                             allFields.get("empfromday" + empSuffix),
+                             allFields.get("empfromyear" + empSuffix),
+                             allFields.get("emptomonth" + empSuffix),
+                             allFields.get("emptoday" + empSuffix),
+                             allFields.get("emptoyear" + empSuffix),
+                             allFields.get("empreason" + empSuffix));
+            hasEmployment = true;
+            empNum++;
+        }
+        
+        if (!hasEmployment) {
+            sb.append("(No employment records listed)\n");
+        }
         
         sb.append("\nCHARACTER REFERENCES\n");
         sb.append("=".repeat(80)).append("\n");
-        addReferenceLine(sb, allFields.get("refname"), allFields.get("refcompany"), 
-                        allFields.get("refposition"), allFields.get("refcontact"));
+        
+        // Display all references
+        boolean hasReference = false;
+        int refNum = 1;
+        
+        // Check for first reference (without suffix)
+        if (!safe(allFields.get("refname")).isEmpty()) {
+            addReferenceLine(sb, allFields.get("refname"), allFields.get("refcompany"), 
+                            allFields.get("refposition"), allFields.get("refcontact"));
+            hasReference = true;
+            refNum++;
+        }
+        
+        // Check for additional references (with suffixes _2, _3, etc.)
+        while (true) {
+            String refSuffix = "_" + refNum;
+            String name = allFields.get("refname" + refSuffix);
+            
+            if (name == null || safe(name).isEmpty()) {
+                break; // No more references
+            }
+            
+            addReferenceLine(sb, name,
+                            allFields.get("refcompany" + refSuffix),
+                            allFields.get("refposition" + refSuffix),
+                            allFields.get("refcontact" + refSuffix));
+            hasReference = true;
+            refNum++;
+        }
+        
+        if (!hasReference) {
+            sb.append("(No character references listed)\n");
+        }
         
         sb.append("\nI certify that the statements made are true and correct.\n\n");
         sb.append("RES CERT NO: ____________\n");
